@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import numpy as np
+import scipy as sp
 
 from hb_common import DynamicsBase, Params, Command
 
@@ -58,31 +59,31 @@ class Dynamics(DynamicsBase):
         # Implement Dynamics for Accelerations Here    #
 
         M = np.zeros((3, 3))
-        M[0, 0] =
-        M[0, 2] =
-        M[1, 1] =
-        M[1, 2] =
-        M[2, 0] =
-        M[2, 1] =
-        M[2, 2] =
+        M[0, 0] = J1x
+        M[0, 2] = -J1x * stheta
+        M[1, 1] = m1 * l1**2 + m2 * l2**2 + J2y + J1y * cphi**2 + J1z * sphi**2
+        M[1, 2] = (J1y - J1z) * sphi * cphi * ctheta
+        M[2, 0] = -J1x * stheta
+        M[2, 1] = (J1y - J1z) * sphi * cphi * ctheta
+        M[2, 2] = (m1*l1**2 + m2*l2**2 + J2z + J1y*sphi**2 + J1z*cphi**2)*ctheta**2 + (J1x + J2x)*stheta**2 + m3*(l3x**2 + l3y**2) + J3z 
 
         c = np.zeros((3, 1))
-        c[0] =
-        c[1] =
-        c[2] =
+        c[0] = (J1y - J1z)*sphi*cphi*(thetad**2 - (ctheta**2)*psid**2) + ((J1y - J1z)*(cphi**2 - sphi**2) - J1x)*ctheta*thetad*psid
+        c[1] = 2*(J1z - J1y)*sphi*cphi*phid*thetad + ((J1y - J1z)*(cphi**2 -sphi**2) + J1x)*ctheta*phid*psid - (1/2)*(2*(J1x + J2x - m1*l1**2 - m2*l2**2 -J2z - J1y*sphi**2 - J1z*cphi**2)*stheta*ctheta)*psid**2
+        c[2] = (thetad**2)*(J1z - J1y)*sphi*cphi*stheta + ((J1y - J1z)*(cphi**2 - sphi**2) - J1x)*ctheta*phid*thetad + (J1z - J1y)*sphi*cphi*stheta*thetad**2 + 2*(J1y - J1z)*sphi*cphi*phid*psid + 2*(-m1*l1**2 - m2*l2**2 - J2z + J1x + J2x + J1y*sphi**2 + J1z*sphi**2)*stheta*ctheta*thetad*psid
 
         dPdq = np.zeros((3, 1))
-        dPdq[1] =
+        dPdq[1] = (m1*l1 + m2*l2)*g*ctheta
 
         Tau = np.zeros((3, 1))
-        Tau[0] =
-        Tau[1] =
-        Tau[2] =
+        Tau[0] = d*(fl - fr)
+        Tau[1] = lT(fl +fr)*cphi
+        Tau[2] = lT(fl + fr)*ctheta*sphi - d*(fl - fr)*stheta
 
         B = np.zeros((3, 3))
-        B[0, 0] =
-        B[1, 1] =
-        B[2, 2] =
+        B[0, 0] = Bphi
+        B[1, 1] = Bth
+        B[2, 2] = Bpsi
 
         ################################################
 
